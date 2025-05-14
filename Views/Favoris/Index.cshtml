@@ -1,0 +1,187 @@
+﻿@model IEnumerable<BookaBook.Models.Favoris>
+
+<style>
+    .hover-to-select{
+        cursor: pointer;
+        transition: all .5s ease-in;
+    }
+    .hover-to-select:hover{
+        transform: rotate(7deg) scale(1.1);
+        box-shadow: 20px 10px 10px rgba(0,0,0,0.7)
+    }
+
+    .trier {
+        background: linear-gradient(65deg, rgb(0, 90, 225), rgb(60, 20, 220));
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: inline-block;
+    }
+
+        .trier:hover {
+            background: linear-gradient(135deg, rgb(20, 110, 245), rgb(80, 40, 240));
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .trier:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+        }
+</style>
+
+<h2>
+    <i class="text-warning fs-3 bi bi-star-fill"></i>
+    Livres Favoris
+</h2>
+<p class="small text-muted text-sm-start">
+    Vous trouverez ci-joint tous vos livres favoris.
+</p> 
+
+@{
+    int itemsPerSlide = 4;
+    var favorisList = Model.ToList();
+    int totalSlides = (int)Math.Ceiling((double)favorisList.Count / itemsPerSlide);
+}
+
+<div class="container mt-2">
+    <div class="row mb-4">
+        <div class="fav-jours">
+            <h5 class="mb-4">Favoris du jour :</h5>
+
+            @if (favorisList.Any())
+            {
+                <div id="favorisCarousel" class="carousel carousel-dark slide w-100" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @for (int slide = 0; slide < totalSlides; slide++)
+                        {
+                            var slideItems = favorisList.Skip(slide * itemsPerSlide).Take(itemsPerSlide).ToList();
+                            <div class="carousel-item @(slide == 0 ? "active" : "")" data-bs-interval="6000">
+                                <div class="row justify-content-center">
+                                    @foreach (var favoris in slideItems)
+                                    {
+                                        <div class="col-md-2" style="cursor:pointer" data-bs-toggle="modal" data-bs-target="#favShow+@favoris.Id">
+                                            <div class="card h-100 text-center border-0 shadow-sm">
+                                                <img src="@favoris.Livre?.ImageUrl"
+                                                class="card-img-top img-fluid"
+                                                style="max-height: 200px; object-fit: contain;"
+                                                alt="Image du livre">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">
+                                                        @{
+                                                            var titre = favoris.Livre?.Titre;
+                                                            var titreCourt = (titre != null && titre.Length > 25)
+                                                            ? titre.Substring(0, 24) + "..."
+                                                            : titre;
+                                                        }
+                                                        @titreCourt
+                                                    </h5>
+
+                                                    <p class="card-text mb-1 d-flex justify-content-center align-items-center ">
+
+                                                        @for(int star =0;star < @favoris.NoteUtilisateur; star++)
+                                                        {
+                                                            <i class="bi bi-heart-fill text-danger me-1 small d-inline" ></i>
+                                                        }
+
+                                                    </p>
+                                                    @if (!string.IsNullOrWhiteSpace(favoris.Commentaire))
+                                                    {
+                                                        <p class="card-text text-muted small">@favoris.Commentaire</p>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <button class="carousel-control-prev" type="button" data-bs-target="#favorisCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Précédent</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#favorisCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Suivant</span>
+                    </button>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">Aucun livre favori pour le moment.</p>
+            }
+        </div>
+    </div>
+    <div class="row mb-5" id="zoneFiltrage">
+        <div class="d-flex justify-content-between">
+            <a asp-action="Index" class="shadow btn btn-secondary trier btn-sm">Tous les favoris</a> <!-- Afficher tous les films -->
+            <a asp-action="OrderedByTitle" class="shadow btn trier btn-secondary btn-sm">Trier par Titre
+                <i class="bi bi-arrow-up-left"></i>
+            </a> <!-- Trier les films par titre -->
+            <a asp-action="OrderedByTitleDesc" class="shadow trier btn btn-secondary btn-sm">
+                Trier par Titre 
+                <i class="bi bi-arrow-down-left"></i>
+            </a> <!-- Trier les films par titre -->
+            <a asp-action="ByGenreName" asp-route-catName="Action" class="shadow trier btn btn-secondary btn-sm">Genre: Action</a> <!-- Filtrer par genre "Action" -->
+            <a asp-action="ByGenreName" asp-route-catName="Comédie" class="shadow trier btn btn-secondary btn-sm">Genre: Comédie</a> <!-- Filtrer par genre "Drama" -->
+        </div>
+    </div>
+    <div class="row" >
+        @foreach(var fav in Model)
+        {
+            <button data-bs-toggle="modal" data-bs-target="#favShow+@fav.Id" class="rounded-3 p-0 m-0 shadow col-2 hover-to-select" style="margin-end:-40px;border:none;background-image:url(@fav.Livre.ImageUrl);background-blend-mode:color-burn">
+                <img class="p-3 img-fluid " style="-o-object-fit:contain" src="@fav.Livre.ImageUrl" />
+            </button>
+            <!-- Modal -->
+            <div class="modal fade" id="favShow+@fav.Id" tabindex="-1" aria-labelledby="exampleModalLabel">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">
+                                @fav.Livre.Titre
+                            </h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body justify-content-center align-items-center">
+                            <div class="card w-100" style="width: 18rem;">
+                                <img src="@fav.Livre.ImageUrl" class="card-img-top img-fluid" style="max-height:390px" alt="...">
+                                <div class="card-body ">
+                                    <p class="card-text">
+                                        @fav.Commentaire
+                                    </p>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item  d-flex justify-content-center align-items-center ">
+                                       
+                                            
+                                            @for (int star = 0; star < @fav.NoteUtilisateur; star++)
+                                            {
+                                                <i class="bi bi-heart-fill text-danger me-1 small d-inline"></i>
+                                            }
+
+                                        
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                            <a  asp-action="Delete" asp-route-id="@fav.Id" class="btn btn-outline-danger">Supprimer de Favoris</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

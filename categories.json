@@ -1,0 +1,17 @@
+[
+  {
+    "Id": "2038c213-a15f-46d3-b813-e03292370924",
+    "Nom": "Aventure",
+    "Description": "Livres d'aventure"
+  },
+  {
+    "Id": "6b38a2eb-76c0-4a71-81ee-da12243bc60b",
+    "Nom": "Action",
+    "Description": "Livres d'action"
+  },
+  {
+    "Id": "2b08c46b-b715-4b0b-96dc-d1c5a4a0add9",
+    "Nom": "Comédie",
+    "Description": "Livres comiques"
+  }
+]
