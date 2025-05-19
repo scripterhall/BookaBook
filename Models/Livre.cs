@@ -9,30 +9,30 @@ namespace BookaBook.Models
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        [Required]
-        [StringLength(100)]
+        /*[Required]
+        [StringLength(100)]*/
         public string? Titre { get; set; }
 
-        [Required]
+        /*[Required]*/
         public string? ISBN { get; set; } = String.Empty;
 
-        [Required]
+        //[Required]
         [StringLength(100)] 
         public string? Auteur { get; set; }
-        [Required]
-        [StringLength(100)]
+        /*[Required]
+        [StringLength(100)]*/
         public string? Description { get; set; } = String.Empty; 
         public int? AnneePublication { get; set; }
         public string? ImageUrl { get; set; }
 
-        [ForeignKey("Category")]
+        /*[ForeignKey("Category")]*/
         public Guid? CategorieId { get; set; }
         public Category? Categorie { get; set; }
 
-        [Required]
+        /*[Required]*/
         public int NombreExemplaires { get; set; }
 
-        [Required]
+        /*[Required]*/
         public string? Langue { get; set; }
 
         
