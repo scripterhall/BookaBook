@@ -1,0 +1,35 @@
+﻿@model ApplicationUser
+
+@{
+    ViewData["Title"] = "Modify User";
+}
+
+<h2 class="mb-4">✏️ Modify User</h2>
+
+<form asp-action="Edit" method="post" class="card card-body shadow-sm">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="row mb-3">
+        <div class="col">
+            <label asp-for="FirstName" class="form-label">FirstName</label>
+            <input asp-for="FirstName" class="form-control" />
+        </div>
+        <div class="col">
+            <label asp-for="LastName" class="form-label">LastName</label>
+            <input asp-for="LastName" class="form-control" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Email" class="form-label">Email</label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="UserName" class="form-label">UserName</label>
+        <input asp-for="UserName" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-warning">Save</button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Annuler</a>
+</form>

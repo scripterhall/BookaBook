@@ -1,0 +1,40 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model IEnumerable<ApplicationUser>
+
+@{
+    ViewData["Title"] = "List of users";
+}
+
+<h2 class="mb-4">👥 List of users</h2>
+
+<a asp-action="Create" class="btn btn-success mb-3">
+    <i class="bi bi-plus-circle"></i> Add User
+</a>
+
+<table class="table table-bordered table-hover table-responsive">
+    <thead class="table-light">
+        <tr>
+            <th>FullName</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th class="text-center">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.FirstName @user.LastName</td>
+                <td>@user.Email</td>
+                <td>@string.Join(", ", await Context.RequestServices.GetRequiredService<UserManager<ApplicationUser>>().GetRolesAsync(user))</td>
+                <td class="text-center">
+                    <div class="d-flex flex-wrap gap-2 justify-content-center">
+                        <a asp-action="Details" asp-route-id="@user.Id" class="btn btn-sm btn-outline-info">Détails</a>
+                        <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-sm btn-outline-warning">Modifier</a>
+                        <a asp-action="Delete" asp-route-id="@user.Id" class="btn btn-sm btn-outline-danger">Supprimer</a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

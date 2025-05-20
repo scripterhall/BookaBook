@@ -44,7 +44,27 @@ body {
     box-shadow: 0 0 10px rgb(218 171 58), 0 0 20px rgb(218 171 58), 0 0 30px rgb(218 171 58);
     transition: box-shadow 0.3s ease;
 }
-
-    .glow-link:hover {
+.glow-link:hover {
         box-shadow: 0 0 20px rgb(218 171 58), 0 0 30px rgb(218 171 58), 0 0 40px rgb(218 171 58);
-    }
+}
+.carousel-control-next-icon {
+    filter: invert(1); /* turns white icon to black */
+}
+.carousel-control-prev-icon {
+    filter: invert(1);
+}
+.carousel-control-prev,
+.carousel-control-next {
+    width: 3%; /* or even 3% depending on your design */
+    justify-content: flex-start; /* for prev */
+    align-items: center;
+}
+
+.carousel-control-prev {
+    left: -75px;
+}
+
+.carousel-control-next {
+    right: -75px;
+    justify-content: flex-end; /* pushes icon to the edge */
+}

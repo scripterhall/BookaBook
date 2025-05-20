@@ -1,0 +1,26 @@
+﻿@model ApplicationUser
+
+@{
+    ViewData["Title"] = "Details Use";
+}
+
+<h2 class="mb-4">👁️ Details </h2>
+
+<div class="card card-body shadow-sm">
+    <dl class="row">
+        <dt class="col-sm-3">FirstName</dt>
+        <dd class="col-sm-9">@Model.FirstName</dd>
+
+        <dt class="col-sm-3">LastName</dt>
+        <dd class="col-sm-9">@Model.LastName</dd>
+
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">@Model.Email</dd>
+
+        <dt class="col-sm-3">UserName</dt>
+        <dd class="col-sm-9">@Model.UserName</dd>
+    </dl>
+
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Modify</a>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Back</a>
+</div>

@@ -1,0 +1,38 @@
+﻿@model ApplicationUser
+
+@{
+    ViewData["Title"] = "Create User";
+}
+
+<h2 class="mb-4">➕ Create a new User</h2>
+
+<form asp-action="Create" method="post" class="card card-body shadow-sm">
+    <div class="row mb-3">
+        <div class="col">
+            <label asp-for="FirstName" class="form-label">FirstName</label>
+            <input asp-for="FirstName" class="form-control" />
+        </div>
+        <div class="col">
+            <label asp-for="LastName" class="form-label">LastName</label>
+            <input asp-for="LastName" class="form-control" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Email" class="form-label">Email</label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="UserName" class="form-label">Username</label>
+        <input asp-for="UserName" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label for="Password" class="form-label">Password</label>
+        <input type="password" name="password" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Back</a>
+</form>

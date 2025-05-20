@@ -34,7 +34,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
-
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<FavorisService, FavorisServiceImpl>();
 builder.Services.AddScoped<ILivreService, LivreServiceImpl>();
 builder.Services.AddScoped<ICategoryService, CategoryServiceImpl>(); 
