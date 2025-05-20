@@ -3,42 +3,37 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BookaBook.Models
 {
-    public class Livre
-    {
+        public class Livre
+        {
 
-        [Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
+                [Key]
+                public Guid Id { get; set; } = Guid.NewGuid();
 
-        /*[Required]
-        [StringLength(100)]*/
-        public string? Titre { get; set; }
+                public string? Titre { get; set; }
 
-        /*[Required]*/
-        public string? ISBN { get; set; } = String.Empty;
+                public string? ISBN { get; set; } = String.Empty;
 
-        //[Required]
-        [StringLength(100)] 
-        public string? Auteur { get; set; }
-        /*[Required]
-        [StringLength(100)]*/
-        public string? Description { get; set; } = String.Empty; 
-        public int? AnneePublication { get; set; }
-        public string? ImageUrl { get; set; }
+                public string? Auteur { get; set; }
+                public string? Description { get; set; } = String.Empty;
+                public int? AnneePublication { get; set; }
+                public string? ImageUrl { get; set; }
 
-        /*[ForeignKey("Category")]*/
-        public Guid? CategorieId { get; set; }
-        public Category? Categorie { get; set; }
+                [NotMapped]
+                public IFormFile? ImageFile { get; set; } // uploaded file
 
-        /*[Required]*/
-        /* book copies num */
-        public int NombreExemplaires { get; set; }
+                public Guid? CategorieId { get; set; }
+                public Category? Categorie { get; set; }
 
-        /*[Required]*/
-        public string? Langue { get; set; }
+                /*[Required]*/
+                /* book copies num */
+                public int NombreExemplaires { get; set; }
 
-        public ICollection<Emprunt> Emprunts { get; set; } = new List<Emprunt>();
+                public string? Langue { get; set; }
 
-         [NotMapped]
-        public int NombreExemplairesDisponibles => NombreExemplaires - Emprunts.Count(e => e.DateRetourEffective == null);
-    }
+                public ICollection<Emprunt> Emprunts { get; set; } = new List<Emprunt>();
+
+                [NotMapped]
+                public int NombreExemplairesDisponibles => NombreExemplaires - Emprunts.Count(e => e.DateRetourEffective == null);
+
+        }
 }

@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
+using System;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -32,9 +34,10 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
-
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<FavorisService, FavorisServiceImpl>();
-builder.Services.AddScoped<LivreService, LivreServiceImpl>();
+builder.Services.AddScoped<ILivreService, LivreServiceImpl>();
+builder.Services.AddScoped<ICategoryService, CategoryServiceImpl>();
 builder.Services.AddScoped<IEmpruntService, EmpruntServiceImpl>();
 builder.Services.AddScoped<DbInitializer>();
 builder.Services.AddControllersWithViews();

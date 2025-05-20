@@ -1,0 +1,65 @@
+﻿@model BookaBook.Models.Livre
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@if (!string.IsNullOrEmpty(Model.ImageUrl))
+{
+    <div class="mb-3">
+        <img src="@Url.Content(Model.ImageUrl)" alt="Image" class="img-thumbnail" style="max-height: 200px;" />
+    </div>
+}
+
+<div class="form-group">
+    <label asp-for="Titre" class="control-label"></label>
+    <input asp-for="Titre" class="form-control" />
+    <span asp-validation-for="Titre" class="text-danger"></span>
+</div>
+
+<div class="form-group">
+    <label asp-for="ISBN" class="control-label"></label>
+    <input asp-for="ISBN" class="form-control" />
+    <span asp-validation-for="ISBN" class="text-danger"></span>
+</div>
+
+<div class="form-group">
+    <label asp-for="Auteur" class="control-label"></label>
+    <input asp-for="Auteur" class="form-control" />
+    <span asp-validation-for="Auteur" class="text-danger"></span>
+</div>
+
+<div class="form-group">
+    <label asp-for="Description" class="control-label"></label>
+    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+    <span asp-validation-for="Description" class="text-danger"></span>
+</div>
+
+<div class="form-group">
+    <label asp-for="AnneePublication" class="control-label"></label>
+    <input asp-for="AnneePublication" class="form-control" />
+    <span asp-validation-for="AnneePublication" class="text-danger"></span>
+</div>
+
+<div class="form-group">
+    <label asp-for="ImageFile" class="control-label">Image de couverture</label>
+    <input asp-for="ImageFile" type="file" class="form-control-file" />
+    <span asp-validation-for="ImageFile" class="text-danger"></span>
+</div>
+
+<div class="form-group">
+    <label asp-for="CategorieId" class="control-label">Catégorie</label>
+    <select asp-for="CategorieId" class="form-control" asp-items="ViewBag.Categories">
+        <option value="">-- Sélectionner une catégorie --</option>
+    </select>
+    <span asp-validation-for="CategorieId" class="text-danger"></span>
+</div>
+
+<div class="form-group">
+    <label asp-for="NombreExemplaires" class="control-label"></label>
+    <input asp-for="NombreExemplaires" class="form-control" />
+    <span asp-validation-for="NombreExemplaires" class="text-danger"></span>
+</div>
+
+<div class="form-group">
+    <label asp-for="Langue" class="control-label"></label>
+    <input asp-for="Langue" class="form-control" />
+    <span asp-validation-for="Langue" class="text-danger"></span>
+</div>

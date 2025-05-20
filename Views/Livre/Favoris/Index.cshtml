@@ -1,0 +1,105 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model BookaBook.ModelView.BooksWithFavourite
+@inject UserManager<ApplicationUser> UserManager
+@{
+    var userId = UserManager.GetUserId(User); // récupère l'ID du user connecté
+
+}
+<h2>Liste des Livres</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Titre</th>
+            <th>Auteur</th>
+            <th>Année de publication</th>
+            <th>Langue</th>
+            <th>Catégorie</th>
+            <th>Image</th>
+            <th>Favorite</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var livre in Model.Livres)
+        {
+            <tr>
+                <td>@livre.Titre</td>
+                <td>@livre.Auteur</td>
+                <td>@(livre.AnneePublication ?? 0)</td>
+                <td>@livre.Langue</td>
+                <td>@livre.Categorie?.Nom</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(livre.ImageUrl))
+                    {
+                        <img src="@livre.ImageUrl" alt="Image du livre" width="100" />
+                    }
+                </td>
+                <!-- bloc ll user connecter -->
+                <td>
+                    <!-- bouton d'ajout dans le favo merrr ' -->
+                    @if (Model.Favoris != null && Model.isFavouriteForCurrentUser(livre.Id))
+                    {
+                        <a asp-controller="Favoris" asp-action="Delete" asp-route-id="@Model.findFavorisForUser(@livre.Id,userId)" class="btn rounded-circle shadow">
+                            <i class=" text-danger fs-5 bi bi-bookmark-x"></i>
+                        </a>
+                    }
+                    else
+                    {
+                        <button class="btn rounded-circle shadow" data-bs-toggle="modal" data-bs-target="#favorisModal+@livre.Id">
+                            <i class="text-warning fs-5 bi bi-bookmark-check"></i>
+                        </button>
+                    }
+
+                </td>
+            </tr>
+            
+
+<!-- Modal -->
+    <div class="modal fade" id="favorisModal+@livre?.Id" tabindex="-1" aria-labelledby="favorisModalLabel+@livre?.Id">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="favorisModalLabel+@livre?.Id">@livre?.Titre</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+
+            <form asp-controller="Favoris" asp-action="Create" method="post">
+                <div class="modal-body">
+
+                    <!-- Champs cachés nécessaires -->
+                    <input asp-for="makeItFavourite.LivreId" value="@livre.Id" type="hidden" />
+                    <!-- changer par user connecter -->
+                    <input asp-for="makeItFavourite.UserId" value="1" type="hidden" />
+
+                    <div class="mb-3">
+                        <label asp-for="makeItFavourite.NoteUtilisateur" class="form-label"></label>
+                        <input asp-for="makeItFavourite.NoteUtilisateur" class="form-control" min="1" max="5" />
+                        <span asp-validation-for="makeItFavourite.NoteUtilisateur" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="makeItFavourite.Commentaire" class="form-label"></label>
+                        <textarea asp-for="makeItFavourite.Commentaire" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="makeItFavourite.Commentaire" class="text-danger"></span>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+            
+
+        }
+    </tbody>
+</table>
+
+

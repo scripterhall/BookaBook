@@ -29,10 +29,11 @@ namespace BookaBook.ModelView
             return Favoris.Any(f => f.Livre.Id == livreId  );
         }
 
-        public Guid findFavorisForUser(Guid livreId)
+        public Guid findFavorisForUser(Guid livreId, string userId)
         {
             // a regler avec current user
-            return Favoris.FirstOrDefault(f => f.LivreId == livreId && f.UserId.Equals("1")).Id;
+            Favoris? favoris = Favoris.FirstOrDefault(f => f.LivreId == livreId && f.UserId.Equals(userId));
+            return favoris.Id;
         }
     }
 }
