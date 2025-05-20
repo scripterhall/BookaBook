@@ -4,8 +4,8 @@ using BookaBook.Models;
 using BookaBook.Service;
 using BookaBook.ServiceImpl;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +13,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = true;
@@ -23,7 +23,6 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
     options.Lockout.AllowedForNewUsers = true;
-
     options.User.AllowedUserNameCharacters =
         "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
     options.User.RequireUniqueEmail = false;
@@ -35,9 +34,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
 
 builder.Services.AddScoped<FavorisService, FavorisServiceImpl>();
-builder.Services.AddScoped<ILivreService, LivreServiceImpl>();
-builder.Services.AddScoped<ICategoryService, CategoryServiceImpl>();
-
+builder.Services.AddScoped<LivreService, LivreServiceImpl>();
+builder.Services.AddScoped<DbInitializer>();
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddControllersWithViews();
@@ -67,4 +65,9 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages().WithStaticAssets();
+using (var scope = app.Services.CreateScope())
+{
+    var dbInitializer = scope.ServiceProvider.GetRequiredService<DbInitializer>();
+    await dbInitializer.SeedRolesAndAdminAsync();
+}
 app.Run();
