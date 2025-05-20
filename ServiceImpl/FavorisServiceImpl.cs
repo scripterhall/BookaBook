@@ -3,21 +3,20 @@ using BookaBook.Models;
 using BookaBook.Service;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace BookaBook.ServiceImpl
 {
     public class FavorisServiceImpl : FavorisService
     {
         private readonly ApplicationDbContext _context;
-        //private readonly UserManager<ApplicationUser> _userManager;
-        //private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public FavorisServiceImpl(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor)
         {
-            //_userManager = userManager;
+            _userManager = userManager;
             _context = context;
-            //_httpContextAccessor = httpContextAccessor;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public void AddFavoris(Favoris favoris)
@@ -40,10 +39,10 @@ namespace BookaBook.ServiceImpl
         public IEnumerable<Favoris> GetAllFavorisByUserId()
         {
             // Get current user
-            //var user = _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User).Result;
+            var user = _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User).Result;
 
             // Get all favoris by user id
-            var favoris = _context.Favoris.Where(f => f.UserId == "1").Include(f => f.Livre).ToList();
+            var favoris = _context.Favoris.Where(f => f.UserId == user.Id).Include(f => f.Livre).ToList();
             return favoris;
         }
 

@@ -29,3 +29,22 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+.jumbotron {
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.glow-link {
+    display: inline-block;
+    padding: 10px 20px;
+    color: white;
+    text-decoration: none;
+    border: 2px solid rgb(218 171 58);
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgb(218 171 58), 0 0 20px rgb(218 171 58), 0 0 30px rgb(218 171 58);
+    transition: box-shadow 0.3s ease;
+}
+
+    .glow-link:hover {
+        box-shadow: 0 0 20px rgb(218 171 58), 0 0 30px rgb(218 171 58), 0 0 40px rgb(218 171 58);
+    }
