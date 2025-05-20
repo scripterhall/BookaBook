@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BookaBook.Migrations
 {
     /// <inheritdoc />
-    public partial class initmigration : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,6 +32,8 @@ namespace BookaBook.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -178,12 +180,12 @@ namespace BookaBook.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Titre = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ISBN = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Auteur = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Auteur = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AnneePublication = table.Column<int>(type: "int", nullable: true),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CategorieId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    NombreExemplaires = table.Column<int>(type: "int", nullable: true),
+                    NombreExemplaires = table.Column<int>(type: "int", nullable: false),
                     Langue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>

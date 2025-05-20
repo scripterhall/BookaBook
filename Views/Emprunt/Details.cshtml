@@ -1,0 +1,47 @@
+@model BookaBook.Models.Livre
+@{
+    ViewData["Title"] = "Détails du Livre";
+}
+<h1>@Model.Titre</h1>
+<div class="row mb-4">
+    <div class="col-md-4">
+        <img src="@Model.ImageUrl" alt="Couverture" class="img-fluid rounded" />
+    </div>
+    <div class="col-md-8">
+        <dl class="row">
+            <dt class="col-sm-3">Auteur</dt>
+            <dd class="col-sm-9">@Model.Auteur</dd>
+
+            <dt class="col-sm-3">ISBN</dt>
+            <dd class="col-sm-9">@Model.ISBN</dd>
+
+            <dt class="col-sm-3">Année</dt>
+            <dd class="col-sm-9">@Model.AnneePublication</dd>
+
+            <dt class="col-sm-3">Description</dt>
+            <dd class="col-sm-9">@Model.Description</dd>
+
+            <dt class="col-sm-3">Disponibles</dt>
+            <dd class="col-sm-9">@Model.NombreExemplairesDisponibles / @Model.NombreExemplaires</dd>
+        </dl>
+
+        @if (Model.NombreExemplairesDisponibles > 0)
+        {
+            <form asp-controller="Emprunts" asp-action="Borrow" method="post" class="row g-3 align-items-center">
+                <input type="hidden" name="livreId" value="@Model.Id" />
+                <div class="col-auto">
+                    <label for="dateRetourPrevue" class="form-label">Date de retour prévue</label>
+                    <input type="date" id="dateRetourPrevue" name="dateRetourPrevue" class="form-control" required />
+                </div>
+                <div class="col-auto align-self-end">
+                    <button type="submit" class="btn btn-success">Emprunter</button>
+                </div>
+            </form>
+        }
+        else
+        {
+            <div class="alert alert-warning">Aucun exemplaire disponible pour le moment.</div>
+        }
+    </div>
+</div>
+<a asp-action="Index" class="btn btn-secondary">Retour au catalogue</a>

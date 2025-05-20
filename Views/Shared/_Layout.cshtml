@@ -40,6 +40,14 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Favoris" asp-action="Index">Favoris</a>
                                 </li>
+                                  <li class="mt-2" style="margin-left: 20px; position: relative;">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Emprunt" asp-action="Index">
+                                        <i class="bi bi-cart3"></i>
+                                    <div class="cart">
+                                        <span id="panier-count"></span>
+                                    </div>
+                                    </a>
+                                </li>
                             }
                             @if(User.IsInRole("Admin"))
                             {

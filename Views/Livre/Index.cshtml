@@ -12,6 +12,7 @@
             <th>Catégorie</th>
             <th>Image</th>
             <th>Favorite</th>
+            <th>Panier</th>
         </tr>
     </thead>
 
@@ -45,7 +46,13 @@
                             <i class="text-warning fs-5 bi bi-bookmark-check"></i>
                         </button>
                     }
-
+                   
+                </td>
+                <td>
+                    @* ajouter l'info au local storage *@
+                    <button class="btn rounded-circle shadow" data-livre-id="@livre.Id" data-livre-ImageUrl="@livre?.ImageUrl" data-livre-titre="@livre?.Titre" onclick="addToCart(this)">
+                        <i class="bi bi-cart3"></i>
+                    </button>
                 </td>
             </tr>
             

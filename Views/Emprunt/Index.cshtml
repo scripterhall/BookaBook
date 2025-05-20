@@ -1,0 +1,41 @@
+@model IEnumerable<BookaBook.Models.Emprunt>
+@{
+    ViewData["Title"] = "Mes Emprunts Actifs";
+}
+<h1>@ViewData["Title"]</h1>
+@if (Model != null && Model.Any())
+{
+   <table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Livre</th>
+            <th>Date d'emprunt</th>
+            <th>Date retour prévue</th>
+            <th>État</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var emprunt in Model) {
+        <tr>
+            <td>@emprunt.Livre?.Titre</td>
+            <td>@emprunt.DateAction.ToString("dd/MM/yyyy")</td>
+            <td>@emprunt.DateRetourPrevue.ToString("dd/MM/yyyy")</td>
+            <td>@emprunt.Etat</td>
+            <td>
+                <form asp-action="Return" asp-controller="Emprunts" method="post">
+                    <input type="hidden" name="empruntId" value="@emprunt.Id" />
+                    <button type="submit" class="btn btn-danger">Retourner</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+}
+else
+{
+    <div class="alert alert-info">Aucun emprunt actif.</div>
+}
+
+<a asp-controller="Livre" asp-action="Index" class="btn btn-secondary">Revenir au catalogue</a>

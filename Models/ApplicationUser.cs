@@ -6,5 +6,7 @@ namespace BookaBook.Models
     {
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
+        public ICollection<Emprunt> Emprunts { get; set; } = new List<Emprunt>();
+
     }
 }

@@ -35,6 +35,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
 builder.Services.AddScoped<FavorisService, FavorisServiceImpl>();
 builder.Services.AddScoped<LivreService, LivreServiceImpl>();
+builder.Services.AddScoped<IEmpruntService, EmpruntServiceImpl>();
 builder.Services.AddScoped<DbInitializer>();
 builder.Services.AddControllersWithViews();
 

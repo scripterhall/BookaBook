@@ -4,6 +4,7 @@ using BookaBook.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookaBook.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250520095109_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -145,15 +148,15 @@ namespace BookaBook.Migrations
                     b.Property<DateTime>("DateRetourPrevue")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Etat")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid?>("LivreId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("etat")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -6613,11 +6616,11 @@ namespace BookaBook.Migrations
             modelBuilder.Entity("BookaBook.Models.Emprunt", b =>
                 {
                     b.HasOne("BookaBook.Models.Livre", "Livre")
-                        .WithMany("Emprunts")
+                        .WithMany()
                         .HasForeignKey("LivreId");
 
                     b.HasOne("BookaBook.Models.ApplicationUser", "User")
-                        .WithMany("Emprunts")
+                        .WithMany()
                         .HasForeignKey("UserId");
 
                     b.Navigation("Livre");
@@ -6700,19 +6703,9 @@ namespace BookaBook.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BookaBook.Models.ApplicationUser", b =>
-                {
-                    b.Navigation("Emprunts");
-                });
-
             modelBuilder.Entity("BookaBook.Models.Category", b =>
                 {
                     b.Navigation("Livres");
-                });
-
-            modelBuilder.Entity("BookaBook.Models.Livre", b =>
-                {
-                    b.Navigation("Emprunts");
                 });
 #pragma warning restore 612, 618
         }
