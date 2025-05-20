@@ -5,6 +5,7 @@ using BookaBook.Service;
 using BookaBook.ServiceImpl;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,7 +35,9 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
 
 builder.Services.AddScoped<FavorisService, FavorisServiceImpl>();
-builder.Services.AddScoped<LivreService, LivreServiceImpl>();
+builder.Services.AddScoped<ILivreService, LivreServiceImpl>();
+builder.Services.AddScoped<ICategoryService, CategoryServiceImpl>();
+
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddControllersWithViews();

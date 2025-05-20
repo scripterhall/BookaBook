@@ -1,0 +1,67 @@
+﻿@model BookaBook.Models.Livre
+
+@{
+    ViewData["Title"] = "Create Livre";
+}
+
+<h2>Create Livre</h2>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label asp-for="Titre"></label>
+        <input asp-for="Titre" class="form-control" />
+        <span asp-validation-for="Titre" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ISBN"></label>
+        <input asp-for="ISBN" class="form-control" />
+        <span asp-validation-for="ISBN" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Auteur"></label>
+        <input asp-for="Auteur" class="form-control" />
+        <span asp-validation-for="Auteur" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="AnneePublication"></label>
+        <input asp-for="AnneePublication" class="form-control" />
+        <span asp-validation-for="AnneePublication" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ImageFile" class="control-label">Image de couverture</label>
+        <input asp-for="ImageFile" type="file" class="form-control-file" />
+        <span asp-validation-for="ImageFile" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CategorieId">Category</label>
+        <select asp-for="CategorieId" asp-items="ViewBag.Categories" class="form-control">
+            <option value="">-- Select Category --</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="NombreExemplaires"></label>
+        <input asp-for="NombreExemplaires" class="form-control" />
+        <span asp-validation-for="NombreExemplaires" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Langue"></label>
+        <input asp-for="Langue" class="form-control" />
+        <span asp-validation-for="Langue" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Create</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

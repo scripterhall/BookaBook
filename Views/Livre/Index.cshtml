@@ -1,100 +1,246 @@
 ﻿@model BookaBook.ModelView.BooksWithFavourite
 
-<h2>Liste des Livres</h2>
+@using Microsoft.AspNetCore.Mvc.Rendering
 
-<table class="table">
+@{
+    ViewData["Title"] = "Livres";
+}
+
+<h2>Livres</h2>
+
+<!-- 🔍 SEARCH FORM -->
+<form method="get" asp-action="Index" class="form-inline mb-3">
+    <input type="text" name="searchTitre" value="@Context.Request.Query["searchTitre"]" placeholder="Titre"
+           class="form-control mr-2" />
+
+    <input type="text" name="searchISBN" value="@Context.Request.Query["searchISBN"]" placeholder="ISBN"
+           class="form-control mr-2" />
+
+    <input type="text" name="searchAuteur" value="@Context.Request.Query["searchAuteur"]" placeholder="Auteur"
+           class="form-control mr-2" />
+
+    <select name="searchCategorieId" class="form-control mr-2">
+        <option value="null">-- Catégorie --</option>
+        @foreach (var cat in (SelectList)ViewBag.Categories)
+        {
+            <option value="@cat.Value" selected="@(cat.Value == Context.Request.Query["searchCategorieId"] ? "selected" : null)">
+                @cat.Text
+            </option>
+        }
+    </select>
+
+    <input type="text" name="searchLangue" value="@Context.Request.Query["searchLangue"]" placeholder="Langue"
+           class="form-control mr-2" />
+
+    <button type="submit" class="btn btn-primary">Rechercher</button>
+    <a asp-action="Index" class="btn btn-secondary ml-2">Réinitialiser</a>
+</form>
+
+<a asp-action="Create" class="btn btn-success mb-3">➕ Ajouter un Livre</a>
+
+<!-- 🔁 SORTING LOGIC -->
+@functions {
+    string GetSortLink(string column)
+    {
+        string newOrder = (ViewBag.SortField == column && ViewBag.SortOrder == "asc") ? "desc" : "asc";
+        return $"?sortField={column}&sortOrder={newOrder}" +
+               $"&searchTitre={Context.Request.Query["searchTitre"]}" +
+               $"&searchISBN={Context.Request.Query["searchISBN"]}" +
+               $"&searchAuteur={Context.Request.Query["searchAuteur"]}" +
+               $"&searchCategorieId={Context.Request.Query["searchCategorieId"]}" +
+               $"&searchLangue={Context.Request.Query["searchLangue"]}" +
+               $"&page={ViewBag.Page}";
+    }
+}
+
+<!-- 📊 LIVRES TABLE -->
+<table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th>Titre</th>
-            <th>Auteur</th>
-            <th>Année de publication</th>
+            <th>Image</th>
+            <th><a href="@GetSortLink("Titre")">Titre</a></th>
+            <th><a href="@GetSortLink("Auteur")">Auteur</a></th>
+            <th>ISBN</th>
             <th>Langue</th>
             <th>Catégorie</th>
-            <th>Image</th>
-            <th>Favorite</th>
+            <th>Actions</th>
         </tr>
     </thead>
-
     <tbody>
-        @foreach (var livre in Model.Livres)
+        @if (!Model.Livres.Any())
         {
-            <tr>
-                <td>@livre.Titre</td>
-                <td>@livre.Auteur</td>
-                <td>@(livre.AnneePublication ?? 0)</td>
-                <td>@livre.Langue</td>
-                <td>@livre.Categorie?.Nom</td>
-                <td>
-                    @if (!string.IsNullOrEmpty(livre.ImageUrl))
-                    {
-                        <img src="@livre.ImageUrl" alt="Image du livre" width="100" />
-                    }
-                </td>
-                <!-- bloc ll user connecter -->
-                <td>
-                    <!-- bouton d'ajout dans le favo merrr ' -->
-                    @if (Model.Favoris != null && Model.isFavouriteForCurrentUser(livre.Id))
-                    {
-                        <a asp-controller="Favoris" asp-action="Delete" asp-route-id="@Model.findFavorisForUser(@livre.Id)" class="btn rounded-circle shadow">
-                            <i class=" text-danger fs-5 bi bi-bookmark-x"></i>
-                        </a>
-                    }
-                    else
-                    {
-                        <button class="btn rounded-circle shadow" data-bs-toggle="modal" data-bs-target="#favorisModal+@livre.Id">
-                            <i class="text-warning fs-5 bi bi-bookmark-check"></i>
-                        </button>
-                    }
+            <tr><td colspan="6" class="text-center">Aucun résultat trouvé.</td></tr>
+        }
+        else
+        {
+            @foreach (var item in Model.Livres)
+            {
+                <tr>
+                    <td>
+                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                        {
+                            <img src="@item.ImageUrl" alt="Image du livre" width="100" />
+                        }
+                    </td>
+                    <td>@item.Titre</td>
+                    <td>@item.Auteur</td>
+                    <td>@item.ISBN</td>
+                    <td>@item.Langue</td>
+                    <td>@item.Categorie?.Nom</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Modifier</a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Détails</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Supprimer</a>
+                        <!-- add favoris ' -->
+                        @if (Model.Favoris != null && Model.isFavouriteForCurrentUser(item.Id))
+                        {
+                            <a asp-controller="Favoris" asp-action="Delete" asp-route-id="@Model.findFavorisForUser(@item.Id)" class="btn rounded-circle shadow">
+                                <i class=" text-danger fs-5 bi bi-bookmark-x"></i>
+                            </a>
+                        }
+                        else
+                        {
+                            <button class="btn rounded-circle shadow" data-bs-toggle="modal" data-bs-target="#favorisModal+@item.Id">
+                                <i class="text-warning fs-5 bi bi-bookmark-check"></i>
+                            </button>
+                        }
+                    </td>
+                </tr>
 
-                </td>
-            </tr>
-            
+                <!-- Modal -->
+                <div class="modal fade" id="favorisModal+@item?.Id" tabindex="-1" aria-labelledby="favorisModalLabel+@item?.Id">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
 
-<!-- Modal -->
-    <div class="modal fade" id="favorisModal+@livre?.Id" tabindex="-1" aria-labelledby="favorisModalLabel+@livre?.Id">
-    <div class="modal-dialog">
-        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="favorisModalLabel+@item?.Id">@item?.Titre</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                            </div>
 
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="favorisModalLabel+@livre?.Id">@livre?.Titre</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-            </div>
+                            <form asp-controller="Favoris" asp-action="Create" method="post">
+                                <div class="modal-body">
 
-            <form asp-controller="Favoris" asp-action="Create" method="post">
-                <div class="modal-body">
+                                    <!-- Champs cachés nécessaires -->
+                                    <input asp-for="makeItFavourite.LivreId" value="@item.Id" type="hidden" />
+                                    <!-- changer par user connecter -->
+                                    <input asp-for="makeItFavourite.UserId" value="1" type="hidden" />
 
-                    <!-- Champs cachés nécessaires -->
-                    <input asp-for="makeItFavourite.LivreId" value="@livre.Id" type="hidden" />
-                    <!-- changer par user connecter -->
-                    <input asp-for="makeItFavourite.UserId" value="1" type="hidden" />
+                                    <div class="mb-3">
+                                        <label asp-for="makeItFavourite.NoteUtilisateur" class="form-label"></label>
+                                        <input asp-for="makeItFavourite.NoteUtilisateur" class="form-control" min="1" max="5" />
+                                        <span asp-validation-for="makeItFavourite.NoteUtilisateur" class="text-danger"></span>
+                                    </div>
 
-                    <div class="mb-3">
-                        <label asp-for="makeItFavourite.NoteUtilisateur" class="form-label"></label>
-                        <input asp-for="makeItFavourite.NoteUtilisateur" class="form-control" min="1" max="5" />
-                        <span asp-validation-for="makeItFavourite.NoteUtilisateur" class="text-danger"></span>
+                                    <div class="mb-3">
+                                        <label asp-for="makeItFavourite.Commentaire" class="form-label"></label>
+                                        <textarea asp-for="makeItFavourite.Commentaire" class="form-control" rows="3"></textarea>
+                                        <span asp-validation-for="makeItFavourite.Commentaire" class="text-danger"></span>
+                                    </div>
+
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-
-                    <div class="mb-3">
-                        <label asp-for="makeItFavourite.Commentaire" class="form-label"></label>
-                        <textarea asp-for="makeItFavourite.Commentaire" class="form-control" rows="3"></textarea>
-                        <span asp-validation-for="makeItFavourite.Commentaire" class="text-danger"></span>
-                    </div>
-
                 </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                    <button type="submit" class="btn btn-primary">Enregistrer</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-            
-
+            }
         }
     </tbody>
 </table>
 
+<!-- 📄 PAGINATION -->
+@if (ViewBag.TotalPages > 1)
+{
+    int currentPage = ViewBag.Page;
+    int totalPages = ViewBag.TotalPages;
+    int pageSize = ViewBag.PageSize ?? 10;
 
+    <nav>
+        <ul class="pagination justify-content-center">
+
+            <!-- ⏮ First Page -->
+            @if (currentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new {
+                        page = 1,
+                        pageSize,
+                        searchTitre = Context.Request.Query["searchTitre"],
+                        searchISBN = Context.Request.Query["searchISBN"],
+                        searchAuteur = Context.Request.Query["searchAuteur"],
+                        searchCategorieId = Context.Request.Query["searchCategorieId"],
+                        searchLangue = Context.Request.Query["searchLangue"],
+                        sortField = ViewBag.SortField,
+                        sortOrder = ViewBag.SortOrder
+                    })">&laquo;</a>
+                </li>
+            }
+
+            <!-- ◀ Previous Page -->
+            @if (currentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new {
+                        page = currentPage - 1,
+                        pageSize,
+                        searchTitre = Context.Request.Query["searchTitre"],
+                        searchISBN = Context.Request.Query["searchISBN"],
+                        searchAuteur = Context.Request.Query["searchAuteur"],
+                        searchCategorieId = Context.Request.Query["searchCategorieId"],
+                        searchLangue = Context.Request.Query["searchLangue"],
+                        sortField = ViewBag.SortField,
+                        sortOrder = ViewBag.SortOrder
+                    })">&lt;</a>
+                </li>
+            }
+
+            <!-- ⏺ Current Page -->
+            <li class="page-item active">
+                <span class="page-link">@currentPage</span>
+            </li>
+
+            <!-- ▶ Next Page -->
+            @if (currentPage < totalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new {
+                        page = currentPage + 1,
+                        pageSize,
+                        searchTitre = Context.Request.Query["searchTitre"],
+                        searchISBN = Context.Request.Query["searchISBN"],
+                        searchAuteur = Context.Request.Query["searchAuteur"],
+                        searchCategorieId = Context.Request.Query["searchCategorieId"],
+                        searchLangue = Context.Request.Query["searchLangue"],
+                        sortField = ViewBag.SortField,
+                        sortOrder = ViewBag.SortOrder
+                    })">&gt;</a>
+                </li>
+            }
+
+            <!-- ⏭ Last Page -->
+            @if (currentPage < totalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="@Url.Action("Index", new {
+                        page = totalPages,
+                        pageSize,
+                        searchTitre = Context.Request.Query["searchTitre"],
+                        searchISBN = Context.Request.Query["searchISBN"],
+                        searchAuteur = Context.Request.Query["searchAuteur"],
+                        searchCategorieId = Context.Request.Query["searchCategorieId"],
+                        searchLangue = Context.Request.Query["searchLangue"],
+                        sortField = ViewBag.SortField,
+                        sortOrder = ViewBag.SortOrder
+                    })">&raquo;</a>
+                </li>
+            }
+
+        </ul>
+    </nav>
+
+}
