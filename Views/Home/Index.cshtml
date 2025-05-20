@@ -1,8 +1,92 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model IEnumerable<BookaBook.ModelView.LivreFavorisModelView>
+@{
+    ViewData["Title"] = "Accueil - BookABook";
+    var chunkedItems = Model
+        .Select((item, index) => new { item, index })
+        .GroupBy(x => x.index / 3)
+        .Select(g => g.Select(x => x.item).ToList())
+        .ToList();
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    var carouselId = "carouselFavoris";
+}
+<!-- Bannière -->
+<div class="jumbotron text-white" style="background-image: url('/images/background-home.jpg'); background-size: cover; padding: 100px 30px;">
+    <div class="container">
+        <h1 class="display-3">Bienvenue sur BookaBook</h1>
+        <p class="lead">Explorez, lisez et partagez votre passion pour les livres.</p>
+        @if(User.Identity.IsAuthenticated)
+        {
+            <a class="glow-link" asp-controller="Livre" asp-action="Index" role="button">Explorer la bibliothèque</a>
+        }
+        else
+        {
+            <a class="glow-link" asp-area="Identity" asp-page="/Account/Login" role="button">Explorer la bibliothèque</a>
+        }
+    </div>
 </div>
+
+<!-- Présentation -->
+<div class="container mt-5">
+    <h2>Qu’est-ce que BookABook ?</h2>
+    <p>
+        BookABook est une bibliothèque numérique qui vous permet de découvrir une grande collection d’ouvrages littéraires classiques et contemporains.
+        Notre mission est de rendre la lecture accessible à tous.
+    </p>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="container">
+        <p class="text-muted text-center">Aucun livre n’a encore été ajouté en favoris.</p>
+    </div>
+}
+else
+{
+<div class="container my-5">
+    <h2 class="mb-4">📚 Livres favoris</h2>
+
+    <div id="@carouselId" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+
+            @for (int i = 0; i < chunkedItems.Count; i++)
+            {
+                var chunk = chunkedItems[i];
+                <div class="carousel-item @(i == 0 ? "active" : "")">
+                    <div class="row">
+                        @foreach (var item in chunk)
+                        {
+                            <div class="col-md-4 mb-4">
+                                <div class="card shadow-sm h-100 position-relative">
+                                    @if (item.IsTop1)
+                                    {
+                                        <span class="badge bg-danger position-absolute top-0 start-0 m-2">Top 1</span>
+                                    }
+                                    <img src="@item.Livre.ImageUrl" class="card-img-top" alt="@item.Livre.Titre" style="height: 250px; object-fit: cover;">
+                                    <div class="card-body">
+                                        <h5 class="card-title">@item.Livre.Titre</h5>
+                                        <p class="card-text">@item.Livre.Description?.Substring(0, Math.Min(item.Livre.Description.Length, 100))...</p>
+                                        <p class="text-muted"><small>Auteur : @item.Livre.Auteur</small></p>
+                                        <p>Note moyenne : @item.NoteMoyenne / 5</p>
+                                        <a href="#" class="btn btn-outline-primary">Voir plus</a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Controls -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#@carouselId" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Précédent</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#@carouselId" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Suivant</span>
+        </button>
+    </div>
+</div>
+
+}

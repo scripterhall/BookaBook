@@ -1,5 +1,10 @@
-﻿@model BookaBook.ModelView.BooksWithFavourite
+﻿@using Microsoft.AspNetCore.Identity
+@model BookaBook.ModelView.BooksWithFavourite
+@inject UserManager<ApplicationUser> UserManager
+@{
+    var userId = UserManager.GetUserId(User); // récupère l'ID du user connecté
 
+}
 <h2>Liste des Livres</h2>
 
 <table class="table">
@@ -35,7 +40,7 @@
                     <!-- bouton d'ajout dans le favo merrr ' -->
                     @if (Model.Favoris != null && Model.isFavouriteForCurrentUser(livre.Id))
                     {
-                        <a asp-controller="Favoris" asp-action="Delete" asp-route-id="@Model.findFavorisForUser(@livre.Id)" class="btn rounded-circle shadow">
+                        <a asp-controller="Favoris" asp-action="Delete" asp-route-id="@Model.findFavorisForUser(@livre.Id,userId)" class="btn rounded-circle shadow">
                             <i class=" text-danger fs-5 bi bi-bookmark-x"></i>
                         </a>
                     }

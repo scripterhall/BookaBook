@@ -1,42 +1,64 @@
 ﻿@model BookaBook.ModelView.BooksWithFavourite
-
+@inject UserManager<ApplicationUser> UserManager
+@using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Mvc.Rendering
 
 @{
     ViewData["Title"] = "Livres";
+    var userId = UserManager.GetUserId(User); // récupère l'ID du user connecté
 }
 
 <h2>Livres</h2>
 
 <!-- 🔍 SEARCH FORM -->
-<form method="get" asp-action="Index" class="form-inline mb-3">
-    <input type="text" name="searchTitre" value="@Context.Request.Query["searchTitre"]" placeholder="Titre"
-           class="form-control mr-2" />
+<form method="get" asp-action="Index" class="mb-4">
+    <div class="row g-3 align-items-center">
 
-    <input type="text" name="searchISBN" value="@Context.Request.Query["searchISBN"]" placeholder="ISBN"
-           class="form-control mr-2" />
+        <div class="col-md-2">
+            <input type="text" name="searchTitre" value="@Context.Request.Query["searchTitre"]"
+            placeholder="Titre" class="form-control" />
+        </div>
 
-    <input type="text" name="searchAuteur" value="@Context.Request.Query["searchAuteur"]" placeholder="Auteur"
-           class="form-control mr-2" />
+        <div class="col-md-2">
+            <input type="text" name="searchISBN" value="@Context.Request.Query["searchISBN"]"
+            placeholder="ISBN" class="form-control" />
+        </div>
 
-    <select name="searchCategorieId" class="form-control mr-2">
-        <option value="null">-- Catégorie --</option>
-        @foreach (var cat in (SelectList)ViewBag.Categories)
-        {
-            <option value="@cat.Value" selected="@(cat.Value == Context.Request.Query["searchCategorieId"] ? "selected" : null)">
-                @cat.Text
-            </option>
-        }
-    </select>
+        <div class="col-md-2">
+            <input type="text" name="searchAuteur" value="@Context.Request.Query["searchAuteur"]"
+            placeholder="Auteur" class="form-control" />
+        </div>
 
-    <input type="text" name="searchLangue" value="@Context.Request.Query["searchLangue"]" placeholder="Langue"
-           class="form-control mr-2" />
+        <div class="col-md-2">
+            <select name="searchCategorieId" class="form-select">
+                <option value="null">-- Catégorie --</option>
+                @foreach (var cat in (SelectList)ViewBag.Categories)
+                {
+                    <option value="@cat.Value" selected="@(cat.Value == Context.Request.Query["searchCategorieId"] ? "selected" : null)">
+                        @cat.Text
+                    </option>
+                }
+            </select>
+        </div>
 
-    <button type="submit" class="btn btn-primary">Rechercher</button>
-    <a asp-action="Index" class="btn btn-secondary ml-2">Réinitialiser</a>
+        <div class="col-md-2">
+            <input type="text" name="searchLangue" value="@Context.Request.Query["searchLangue"]"
+            placeholder="Langue" class="form-control" />
+        </div>
+
+        <div class="col-md-2 d-grid">
+            <button type="submit" class="btn btn-primary">Rechercher</button>
+        </div>
+
+        <div class="col-md-2 d-grid">
+            <a asp-action="Index" class="btn btn-secondary">Réinitialiser</a>
+        </div>
+    </div>
 </form>
-
-<a asp-action="Create" class="btn btn-success mb-3">➕ Ajouter un Livre</a>
+@if (User.IsInRole("Admin"))
+{
+    <a asp-action="Create" class="btn btn-success mb-3">➕ Ajouter un Livre</a>
+}
 
 <!-- 🔁 SORTING LOGIC -->
 @functions {
@@ -88,23 +110,41 @@
                     <td>@item.Langue</td>
                     <td>@item.Categorie?.Nom</td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Modifier</a>
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Détails</a>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Supprimer</a>
-                        <!-- add favoris ' -->
-                        @if (Model.Favoris != null && Model.isFavouriteForCurrentUser(item.Id))
-                        {
-                            <a asp-controller="Favoris" asp-action="Delete" asp-route-id="@Model.findFavorisForUser(@item.Id)" class="btn rounded-circle shadow">
-                                <i class=" text-danger fs-5 bi bi-bookmark-x"></i>
+                        <div class="d-flex flex-wrap align-items-center gap-2">
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">
+                                    <i class="bi bi-pencil-square"></i> Modifier
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i> Supprimer
+                                </a>
+                            }
+
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">
+                                <i class="bi bi-info-circle"></i> Détails
                             </a>
-                        }
-                        else
-                        {
-                            <button class="btn rounded-circle shadow" data-bs-toggle="modal" data-bs-target="#favorisModal+@item.Id">
-                                <i class="text-warning fs-5 bi bi-bookmark-check"></i>
-                            </button>
-                        }
+
+                            @if (Model.Favoris != null && Model.isFavouriteForCurrentUser(item.Id))
+                            {
+                                <a asp-controller="Favoris" asp-action="Delete" asp-route-id="@Model.findFavorisForUser(@item.Id, userId)"
+                                   class="btn btn-sm btn-light rounded-circle shadow" title="Retirer des favoris">
+                                    <i class="text-danger fs-5 bi bi-bookmark-x"></i>
+                                </a>
+                            }
+                            else if (User.Identity.IsAuthenticated && User.IsInRole("User"))
+                            {
+                                <button class="btn btn-sm btn-light rounded-circle shadow"
+                                        data-bs-toggle="modal" data-bs-target="#favorisModal+@item.Id"
+                                        title="Ajouter aux favoris">
+                                    <i class="text-warning fs-5 bi bi-bookmark-check"></i>
+                                </button>
+                            }
+
+                        </div>
                     </td>
+
                 </tr>
 
                 <!-- Modal -->
@@ -123,7 +163,7 @@
                                     <!-- Champs cachés nécessaires -->
                                     <input asp-for="makeItFavourite.LivreId" value="@item.Id" type="hidden" />
                                     <!-- changer par user connecter -->
-                                    <input asp-for="makeItFavourite.UserId" value="1" type="hidden" />
+                                    <input asp-for="makeItFavourite.UserId" value="@userId" type="hidden" />
 
                                     <div class="mb-3">
                                         <label asp-for="makeItFavourite.NoteUtilisateur" class="form-label"></label>

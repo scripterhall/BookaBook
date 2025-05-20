@@ -1,0 +1,14 @@
+﻿@model ApplicationUser
+
+<h3>Voulez-vous vraiment supprimer cet utilisateur ?</h3>
+<div class="mb-3">
+    <strong>Nom:</strong> @Model.UserName <br />
+    <strong>Email:</strong> @Model.Email
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Supprimer</button>
+    <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+</form>
+
