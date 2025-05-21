@@ -42,33 +42,40 @@
 }
 else
 {
-<div class="container my-5">
-    <h2 class="mb-4">📚 Livres favoris</h2>
+    <div class="container my-5">
+        <h2 class="mb-4">📚 Livres favoris</h2>
 
-    <div id="@carouselId" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
+        <div id="@carouselId" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
 
-            @for (int i = 0; i < chunkedItems.Count; i++)
-            {
-                var chunk = chunkedItems[i];
-                <div class="carousel-item @(i == 0 ? "active" : "")">
-                    <div class="row">
-                        @foreach (var item in chunk)
-                        {
-                            <div class="col-md-4 mb-4">
-                                <div class="card shadow-sm h-100 position-relative">
-                                    @if (item.IsTop1)
-                                    {
-                                        <span class="badge bg-danger position-absolute top-0 start-0 m-2">Top 1</span>
-                                    }
-                                    <img src="@item.Livre.ImageUrl" class="card-img-top" alt="@item.Livre.Titre" style="height: 250px; object-fit: cover;">
-                                    <div class="card-body">
-                                        <h5 class="card-title">@item.Livre.Titre</h5>
-                                        <p class="card-text">@item.Livre.Description?.Substring(0, Math.Min(item.Livre.Description.Length, 100))...</p>
-                                        <p class="text-muted"><small>Auteur : @item.Livre.Auteur</small></p>
-                                        <p>Note moyenne : @item.NoteMoyenne / 5</p>
-                                        <a href="#" class="btn btn-outline-primary">Voir plus</a>
-                                    </div>
+                @for (int i = 0; i < chunkedItems.Count; i++)
+                {
+                    var chunk = chunkedItems[i];
+                    <div class="carousel-item @(i == 0 ? "active" : "")">
+                        <div class="row">
+                            @foreach (var item in chunk)
+                            {
+                                <div class="col-md-4 mb-4">
+                                    <div class="card shadow-sm h-100 position-relative">
+                                        @if (item.IsTop1)
+                                        {
+                                            <span class="badge bg-danger position-absolute top-0 start-0 m-2">Top 1</span>
+                                        }
+                                        <img src="@item.Livre.ImageUrl" class="card-img-top" alt="@item.Livre.Titre" style="height: 250px; object-fit: cover;">
+                                        <div class="card-body">
+                                            <h5 class="card-title">@item.Livre.Titre</h5>
+                                            <p class="card-text">@item.Livre.Description?.Substring(0, Math.Min(item.Livre.Description.Length, 100))...</p>
+                                            <p class="text-muted"><small>Auteur : @item.Livre.Auteur</small></p>
+                                            <p>Note moyenne : @item.NoteMoyenne / 5</p>
+                                            @if (!User.Identity.IsAuthenticated)
+                                            {
+                                                <a href="/Identity/Account/Login" class="btn" style="background-color:#3D0240;color:white">Voir plus</a>
+                                            }
+                                            else
+                                            {
+                                                <a asp-controller="Livre" asp-action="Details" asp-route-id="@item.Livre.Id" role="button" class="btn" style="background-color:#3D0240;color:white">Voir plus</a>
+                                            }
+                                        </div>
                                 </div>
                             </div>
                         }

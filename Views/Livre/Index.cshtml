@@ -47,7 +47,7 @@
         </div>
 
         <div class="col-md-2 d-grid">
-            <button type="submit" class="btn btn-primary">Rechercher</button>
+            <button type="submit" class="btn" style="background-color:#3D0240;color:white">Rechercher</button>
         </div>
 
         <div class="col-md-2 d-grid">
@@ -122,7 +122,7 @@
                                 </a>
                             }
 
-                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn" style="background-color:#3D0240;color:white">
                                 <i class="bi bi-info-circle"></i> Détails
                             </a>
 
@@ -201,13 +201,13 @@
     int pageSize = ViewBag.PageSize ?? 10;
 
     <nav>
-        <ul class="pagination justify-content-center">
+        <ul class="pagination justify-content-center" style="color:white">
 
             <!-- ⏮ First Page -->
             @if (currentPage > 1)
             {
                 <li class="page-item">
-                    <a class="page-link" href="@Url.Action("Index", new {
+                    <a class="page-link" style="color:#3D0240;" href="@Url.Action("Index", new {
                         page = 1,
                         pageSize,
                         searchTitre = Context.Request.Query["searchTitre"],
@@ -224,8 +224,8 @@
             <!-- ◀ Previous Page -->
             @if (currentPage > 1)
             {
-                <li class="page-item">
-                    <a class="page-link" href="@Url.Action("Index", new {
+                <li class="page-item" style="color:#3D0240;">
+                    <a class="page-link" style="color:#3D0240;" href="@Url.Action("Index", new {
                         page = currentPage - 1,
                         pageSize,
                         searchTitre = Context.Request.Query["searchTitre"],
@@ -240,7 +240,8 @@
             }
 
             <!-- ⏺ Current Page -->
-            <li class="page-item active">
+            <li class="page-item active" style="--bs-pagination-active-bg: #3D0240;
+    --bs-pagination-active-border-color: #3D0240;color:white">
                 <span class="page-link">@currentPage</span>
             </li>
 
@@ -248,7 +249,7 @@
             @if (currentPage < totalPages)
             {
                 <li class="page-item">
-                    <a class="page-link" href="@Url.Action("Index", new {
+                    <a class="page-link" style="color:#3D0240;" href="@Url.Action("Index", new {
                         page = currentPage + 1,
                         pageSize,
                         searchTitre = Context.Request.Query["searchTitre"],
@@ -266,7 +267,7 @@
             @if (currentPage < totalPages)
             {
                 <li class="page-item">
-                    <a class="page-link" href="@Url.Action("Index", new {
+                    <a class="page-link" style="color:#3D0240;" href="@Url.Action("Index", new {
                         page = totalPages,
                         pageSize,
                         searchTitre = Context.Request.Query["searchTitre"],

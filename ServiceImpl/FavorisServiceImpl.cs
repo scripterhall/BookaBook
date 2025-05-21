@@ -59,7 +59,10 @@ namespace BookaBook.ServiceImpl
 
         public IEnumerable<Favoris> GetFavorisOrderedByTitleAsc()
         {
+            var user = _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User).Result;
+
             return _context.Favoris
+                .Where(f => f.UserId == user.Id)
                       .OrderBy(f => f.Livre.Titre)
                       .Include(f => f.Livre)
                       .Include(f => f.Livre.Categorie)
@@ -68,7 +71,11 @@ namespace BookaBook.ServiceImpl
 
         public IEnumerable<Favoris> GetFavorisOrderedByTitleDesc()
         {
+            var user = _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User).Result;
+
             return _context.Favoris
+                                .Where(f => f.UserId == user.Id)
+
                            .OrderByDescending(f => f.Livre.Titre)
                            .Include(f => f.Livre)
                            .Include(f => f.Livre.Categorie)
@@ -76,8 +83,10 @@ namespace BookaBook.ServiceImpl
         }
         public IEnumerable<Favoris> GetFavorisByGenreName(string catName)
         {
+            var user = _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User).Result;
+
             return _context.Favoris
-                           .Where(f => f.Livre.Categorie.Nom == catName)
+                           .Where(f => f.Livre.Categorie.Nom == catName && f.UserId == user.Id)
                            .Include(f => f.Livre)
                            .Include(f=> f.Livre.Categorie)
                            .ToList();

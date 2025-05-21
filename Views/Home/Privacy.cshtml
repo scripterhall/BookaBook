@@ -1,6 +1,97 @@
 ﻿@{
     ViewData["Title"] = "Privacy Policy";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<section class="container py-5">
+    <div class="bg-white shadow-lg rounded-4 p-4 p-md-5 border border-light">
+        <header class="mb-5 text-center">
+            <h1 class="display-4 fw-bold mb-3" style="color:#3D0240">
+                <i class="bi bi-shield-lock me-2"></i>Privacy Policy
+            </h1>
+            <p class="lead text-muted fs-5">
+                Your privacy is important to us. This policy explains how we handle your information
+                in our book rental service.
+            </p>
+        </header>
+
+        <div class="content-block">
+            <h2 class="h3 text-dark mb-3 d-flex align-items-center">
+                <i class="bi bi-collection me-2" style="color:#3D0240"></i>1. Information We Collect
+            </h2>
+            <ul class="list-unstyled mb-4">
+                <li class="d-flex mb-2">
+                    <i class="bi bi-chevron-right me-2" style="color:#3D0240"></i>
+                    <div>
+                        <strong class="text-dark">Personal Information:</strong>
+                        <span class="text-muted">Name and email</span>
+                    </div>
+                </li>
+                <li class="d-flex">
+                    <i class="bi bi-chevron-right me-2" style="color:#3D0240"></i>
+                    <div>
+                        <strong class="text-dark">Account Information:</strong>
+                        <span class="text-muted">Login credentials and rental history</span>
+                    </div>
+                </li>
+            </ul>
+
+            <h2 class="h3 text-dark mb-3 d-flex align-items-center">
+                <i class="bi bi-gear me-2" style="color:#3D0240"></i>2. How We Use Your Information
+            </h2>
+            <ul class="list-styled">
+                <li class="d-flex mb-2">
+                    <div class="bullet-point text-white me-3" style="background-color:#3D0240">➊</div>
+                    <span class="text-muted">Process and manage book rentals</span>
+                </li>
+                <li class="d-flex">
+                    <div class="bullet-point text-white me-3" style="background-color:#3D0240">➋</div>
+                    <span class="text-muted">Provide customer support and services</span>
+                </li>
+            </ul>
+
+            <!-- Repeat similar structure for other sections -->
+
+            <div class="alert alert-light border mt-5">
+                <h2 class="h3 text-dark mb-3">
+                    <i class="bi bi-clock-history me-2" style="color:#3D0240"></i>7. Policy Changes
+                </h2>
+                <p class="text-muted mb-1">
+                    Updates will be posted here with the revision date below.
+                </p>
+                <div class="badge bg-light text-dark border mt-2">
+                    <i class="bi bi-calendar-event me-1"></i>
+                    Last updated: @DateTime.Now.ToString("MMMM dd, yyyy")
+                </div>
+            </div>
+        </div>
+
+        <footer class="mt-5 pt-4 border-top text-center">
+            <h3 class="h5 text-muted mb-3">Need Help?</h3>
+            <a href="mailto:support@bookAbook.com"
+               class="btn glow-link rounded-pill px-4" style="color:#3D0240">
+                <i class="bi bi-envelope me-2"></i>Contact Support
+            </a>
+        </footer>
+    </div>
+</section>
+
+<style>
+    .list-styled .bullet-point {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+    }
+
+    .content-block {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .border-light {
+        border-color: #f0f0f0!important;
+    }
+</style>
