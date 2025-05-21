@@ -26,6 +26,8 @@ namespace BookaBook.ServiceImpl
         public async Task<bool> CreateAsync(ApplicationUser user, string password)
         {
             var result = await _userManager.CreateAsync(user, password);
+            if(result!=null)
+                await _userManager.AddToRoleAsync(user, "User");
             return result.Succeeded;
         }
 

@@ -5,7 +5,7 @@ namespace BookaBook.Models
 {
         public class Livre
         {
-
+                
                 [Key]
                 public Guid Id { get; set; } = Guid.NewGuid();
 
@@ -32,8 +32,6 @@ namespace BookaBook.Models
 
                 public ICollection<Emprunt> Emprunts { get; set; } = new List<Emprunt>();
 
-                [NotMapped]
-                public int NombreExemplairesDisponibles => NombreExemplaires - Emprunts.Count(e => e.DateRetourEffective == null);
 
-        }
+    }
 }

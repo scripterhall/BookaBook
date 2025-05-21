@@ -16,12 +16,12 @@ namespace BookaBook.ServiceImpl
 
         public async Task<IEnumerable<Livre>> GetAllAsync()
         {
-            return await _context.Livres.Include(l => l.Categorie).ToListAsync();
+            return await _context.Livres.Include(l => l.Categorie).Include(l => l.Emprunts).ToListAsync();
         }
 
         public async Task<Livre?> GetByIdAsync(Guid id)
         {
-            return await _context.Livres.Include(l => l.Categorie).FirstOrDefaultAsync(l => l.Id == id);
+            return await _context.Livres.Include(l => l.Categorie).Include(l => l.Emprunts).FirstOrDefaultAsync(l => l.Id == id);
         }
 
         public async Task CreateAsync(Livre livre)
@@ -51,6 +51,7 @@ namespace BookaBook.ServiceImpl
         {
             var query = _context.Livres
                 .Include(l => l.Categorie)
+                .Include(l => l.Emprunts)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(titre))
@@ -76,7 +77,7 @@ namespace BookaBook.ServiceImpl
     string? sortField, string? sortOrder,
     int page, int pageSize)
         {
-            var query = _context.Livres.Include(l => l.Categorie).AsQueryable();
+            var query = _context.Livres.Include(l => l.Categorie).Include(l => l.Emprunts).AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(titre))
                 query = query.Where(l => l.Titre != null && l.Titre.ToLower().Contains(titre.ToLower()));

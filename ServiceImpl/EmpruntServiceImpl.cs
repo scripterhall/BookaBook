@@ -29,8 +29,8 @@ namespace BookaBook.ServiceImpl
 
             if (livre == null)
                 throw new InvalidOperationException("Livre introuvable.");
-
-            if (livre.NombreExemplairesDisponibles <= 0)
+            
+            if ((livre.NombreExemplaires - livre.Emprunts.Where(e => e.DateRetourEffective == null).Count()) <= 0)
                 throw new InvalidOperationException("Aucun exemplaire disponible.");
 
             var emprunt = new Emprunt
@@ -41,7 +41,6 @@ namespace BookaBook.ServiceImpl
                 DateAction = DateTime.Now,
                 Etat = "Validé"
             };
-            livre.NombreExemplaires--;
 
             _context.Emprunts.Add(emprunt);
             await _context.SaveChangesAsync();
@@ -59,7 +58,6 @@ namespace BookaBook.ServiceImpl
             var livre = await _context.Livres.FindAsync(emprunt.LivreId);
             if (livre == null)
                 throw new InvalidOperationException("Livre introuvable.");
-            livre.NombreExemplaires++;
             await _context.SaveChangesAsync();
         }
 
@@ -97,7 +95,7 @@ namespace BookaBook.ServiceImpl
             {
                 if (emprunt.Livre == null)
                     throw new InvalidOperationException("Livre introuvable pour cet emprunt, Refreshez.");
-                if (emprunt.Livre.NombreExemplairesDisponibles <= 0)
+                if (emprunt.Livre.NombreExemplaires - emprunt.Livre.Emprunts.Count(e => e.DateRetourEffective == null) <= 0)
                     throw new InvalidOperationException($"Aucun exemplaire disponible pour le livre {emprunt.Livre.Titre}.");
                 emprunt.Livre.NombreExemplaires--;
                 emprunt.Etat = "Validé";
@@ -131,7 +129,7 @@ namespace BookaBook.ServiceImpl
             if (livre == null)
                 throw new InvalidOperationException("Livre introuvable.");
 
-            if (livre.NombreExemplairesDisponibles <= 0)
+            if (livre.NombreExemplaires - livre.Emprunts.Count(e => e.DateRetourEffective == null) <= 0)
                 throw new InvalidOperationException("Aucun exemplaire disponible.");
 
             var userId = this.GetUserId();
