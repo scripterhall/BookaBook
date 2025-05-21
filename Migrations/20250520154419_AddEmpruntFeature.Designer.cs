@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookaBook.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250513013808_initmigration")]
-    partial class initmigration
+    [Migration("20250520154419_AddEmpruntFeature")]
+    partial class AddEmpruntFeature
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,6 +43,12 @@ namespace BookaBook.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -142,15 +148,15 @@ namespace BookaBook.Migrations
                     b.Property<DateTime>("DateRetourPrevue")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Etat")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid?>("LivreId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("etat")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -201,7 +207,8 @@ namespace BookaBook.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Auteur")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<Guid?>("CategorieId")
                         .HasColumnType("uniqueidentifier");
@@ -218,7 +225,7 @@ namespace BookaBook.Migrations
                     b.Property<string>("Langue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("NombreExemplaires")
+                    b.Property<int>("NombreExemplaires")
                         .HasColumnType("int");
 
                     b.Property<string>("Titre")
@@ -6609,11 +6616,11 @@ namespace BookaBook.Migrations
             modelBuilder.Entity("BookaBook.Models.Emprunt", b =>
                 {
                     b.HasOne("BookaBook.Models.Livre", "Livre")
-                        .WithMany()
+                        .WithMany("Emprunts")
                         .HasForeignKey("LivreId");
 
                     b.HasOne("BookaBook.Models.ApplicationUser", "User")
-                        .WithMany()
+                        .WithMany("Emprunts")
                         .HasForeignKey("UserId");
 
                     b.Navigation("Livre");
@@ -6696,9 +6703,19 @@ namespace BookaBook.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("BookaBook.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("Emprunts");
+                });
+
             modelBuilder.Entity("BookaBook.Models.Category", b =>
                 {
                     b.Navigation("Livres");
+                });
+
+            modelBuilder.Entity("BookaBook.Models.Livre", b =>
+                {
+                    b.Navigation("Emprunts");
                 });
 #pragma warning restore 612, 618
         }

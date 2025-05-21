@@ -29,6 +29,22 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+.cart {
+  position: absolute;
+  top: -10px;
+  right:-5px ;
+  z-index: 1030;
+  background-color: red;
+  color: white;
+  height: 20px;
+  width: 20px;
+  border-radius: 20px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: bold;
+}
 .jumbotron {
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
@@ -67,4 +83,10 @@ body {
 .carousel-control-next {
     right: -75px;
     justify-content: flex-end; /* pushes icon to the edge */
+}
+
+.active-nav-link {  
+    color: #6d10b9 !important ;
+    font-weight: bold;
+    text-decoration: underline; 
 }

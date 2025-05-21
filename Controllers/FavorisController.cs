@@ -65,7 +65,5 @@ namespace BookaBook.Controllers
         }
 
 
-
-
     }
 }

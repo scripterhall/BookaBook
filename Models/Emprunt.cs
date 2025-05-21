@@ -8,8 +8,8 @@ namespace BookaBook.Models
         public DateTime DateRetourPrevue { get; set; }
         public DateTime? DateRetourEffective { get; set; }
         
-        public String etat { get; set; } = "Validé";
+        public String Etat { get; set; } = "Validé"; // Validé, EnAttente, Retardé, Annulé
 
-
+    
     }
 }

@@ -37,7 +37,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<FavorisService, FavorisServiceImpl>();
 builder.Services.AddScoped<ILivreService, LivreServiceImpl>();
-builder.Services.AddScoped<ICategoryService, CategoryServiceImpl>(); 
+builder.Services.AddScoped<ICategoryService, CategoryServiceImpl>();
+builder.Services.AddScoped<IEmpruntService, EmpruntServiceImpl>();
 builder.Services.AddScoped<DbInitializer>();
 builder.Services.AddControllersWithViews();
 
