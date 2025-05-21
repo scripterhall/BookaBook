@@ -1,6 +1,7 @@
 using BookaBook.Data;
 using BookaBook.Models;
 using BookaBook.Service;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookaBook.ServiceImpl
@@ -8,14 +9,19 @@ namespace BookaBook.ServiceImpl
     public class EmpruntServiceImpl : IEmpruntService
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public EmpruntServiceImpl(ApplicationDbContext context)
+
+        public EmpruntServiceImpl(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
+            _userManager = userManager;
         }
 
         // emprunter un livre
-        public async Task BorrowAsync(Guid livreId, string userId, DateTime dateRetourPrevue)
+        public async Task BorrowAsync(Guid livreId, DateTime dateRetourPrevue)
         {
             var livre = await _context.Livres
                 .Include(l => l.Emprunts)
@@ -30,7 +36,7 @@ namespace BookaBook.ServiceImpl
             var emprunt = new Emprunt
             {
                 LivreId = livreId,
-                UserId = userId,
+                UserId = this.GetUserId(),
                 DateRetourPrevue = dateRetourPrevue,
                 DateAction = DateTime.Now,
                 Etat = "Validé"
@@ -55,18 +61,15 @@ namespace BookaBook.ServiceImpl
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Emprunt>> GetActiveEmpruntsForUserAsync(string userId)
+        public async Task<IEnumerable<Emprunt>> GetActiveEmpruntsForUserAsync()
         {
             return await _context.Emprunts
                 .Include(e => e.Livre)
-                .Where(e => e.UserId == userId && e.DateRetourEffective == null)
+                .Where(e => e.UserId == this.GetUserId() && e.DateRetourEffective == null)
                 .ToListAsync();
         }
 
-        public async Task BorrowMultipleAsync(
-    IEnumerable<Guid> livreIds,
-    string userId,
-    DateTime dateRetourPrevue)
+        public async Task BorrowMultipleAsync(IEnumerable<Guid> livreIds, DateTime dateRetourPrevue)
         {
             var livres = await _context.Livres
                 .Include(l => l.Emprunts)
@@ -83,7 +86,7 @@ namespace BookaBook.ServiceImpl
             var emprunts = livres.Select(livre => new Emprunt
             {
                 LivreId = livre.Id,
-                UserId = userId,
+                UserId = this.GetUserId(),
                 DateRetourPrevue = dateRetourPrevue,
                 DateAction = DateTime.Now,
                 Etat = "Validé"
@@ -93,5 +96,37 @@ namespace BookaBook.ServiceImpl
             await _context.SaveChangesAsync();
         }
 
-    }
+        public async Task<IEnumerable<Emprunt>> GetAllEmpruntsAsync()
+        {
+            try
+            {
+                return await _context.Emprunts
+              .Include(e => e.Livre)
+              .Include(e => e.User)
+              .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("Erreur lors de la récupération des emprunts.", ex);
+            }
+        }
+
+        private string GetUserId()
+        {
+            if (_httpContextAccessor.HttpContext == null || _httpContextAccessor.HttpContext.User == null)
+                throw new InvalidOperationException("Contexte HTTP ou utilisateur introuvable.");
+
+            var user = _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User).Result;
+            if (user == null)
+                throw new InvalidOperationException("Utilisateur introuvable.");
+
+            return user.Id;
+        }
+
+
+    };
+
+
+
+
 }

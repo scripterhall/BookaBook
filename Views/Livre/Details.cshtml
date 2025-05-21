@@ -41,8 +41,65 @@
         </dd>
     </dl>
 </div>
-@if(User.IsInRole("User"))
-{
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+
+
+<div class="mb-3">
+    @if (User.IsInRole("User"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#empruntModal">
+            <i class="bi bi-book-half"></i> Emprunter
+        </button>
+    }
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</div>
+
+@* Modal *@
+<div class="modal fade" id="empruntModal" tabindex="-1" aria-labelledby="empruntModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-controller="Emprunt" asp-action="Borrow" method="post" class="needs-validation" novalidate>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="empruntModalLabel">Emprunter “@Model.Titre”</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="livreId" value="@Model.Id" />
+                    <div class="mb-3">
+                        <label for="dateRetourPrevue" class="form-label">Date de retour prévue</label>
+                        <input type="date" class="form-control" id="dateRetourPrevue" name="dateRetourPrevue" required
+                            min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                        <div class="invalid-feedback">
+                            Veuillez choisir une date de retour valide.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Annuler
+                    </button>
+                    <button type="submit" class="btn btn-primary">Emprunter Directement</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
 }
-<a asp-action="Index" class="btn btn-secondary">Back</a>
