@@ -114,7 +114,7 @@ namespace BookaBook.ServiceImpl
             }
         }
 
-        public async Task AddToCartAsync(Guid livreId)
+        public async Task AddToCartAsync(Guid livreId, DateTime dateRetourPrevue)
         {
             var livre = await _context.Livres
                 .Include(l => l.Emprunts)
@@ -140,6 +140,7 @@ namespace BookaBook.ServiceImpl
                 LivreId = livreId,
                 UserId = userId,
                 DateAction = DateTime.Now,
+                DateRetourPrevue = dateRetourPrevue,
                 Etat = "En attente"
             };
 

@@ -45,11 +45,11 @@ namespace BookaBook.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddToCart(Guid livreId)
+        public async Task<IActionResult> AddToCart(Guid livreId, DateTime dateRetourPrevue)
         {
             try
             {
-                await _empruntService.AddToCartAsync(livreId);
+                await _empruntService.AddToCartAsync(livreId, dateRetourPrevue);
                 return RedirectToAction("Index", "Livre");
             }
             catch (InvalidOperationException ex)

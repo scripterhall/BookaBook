@@ -46,7 +46,10 @@
 
 <div class="d-flex justify-content-between">
     <a asp-controller="Livre" asp-action="Index" class="btn btn-secondary">Revenir au catalogue</a>
-    <form asp-controller="Emprunt" asp-action="BorrowMultiple" method="post" style="display:inline;">
-        <button type="submit" class="btn btn-primary">Emprunter Tous</button>
-    </form>
+    @if (Model.Count() > 0)
+    {
+        <form asp-controller="Emprunt" asp-action="BorrowMultiple" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-primary">Emprunter Tous</button>
+        </form>
+    }
 </div>

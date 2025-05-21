@@ -84,3 +84,9 @@ body {
     right: -75px;
     justify-content: flex-end; /* pushes icon to the edge */
 }
+
+.active-nav-link {  
+    color: #6d10b9 !important ;
+    font-weight: bold;
+    text-decoration: underline; 
+}

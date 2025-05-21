@@ -34,29 +34,31 @@
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Livre"
-                                    asp-action="Index">Livre</a>
+                                <a class="nav-link text-dark @(ViewContext.RouteData.Values["controller"]?.ToString() == "Livre" ? "active-nav-link" : "")"
+                                    asp-area="" asp-controller="Livre" asp-action="Index">Livre</a>
                             </li>
                             @if (User.IsInRole("User"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Favoris"
-                                        asp-action="Index">Favoris</a>
+                                    <a class="nav-link text-dark @(ViewContext.RouteData.Values["controller"]?.ToString() == "Favoris" ? "active-nav-link" : "")"
+                                        asp-area="" asp-controller="Favoris" asp-action="Index">Favoris</a>
                                 </li>
-                                <li class="mt-2" style="margin-left: 20px; position: relative;">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Emprunt" asp-action="cart">
-                                        <i class="bi bi-cart3"></i>
-                                        <div class="cart">
-                                            <span id="panier-count"></span>
-                                        </div>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark @(ViewContext.RouteData.Values["controller"]?.ToString() == "Emprunt" ? "active-nav-link" : "")"
+                                        asp-area="" asp-controller="Emprunt" asp-action="cart">
+                                        @*  <i class="bi bi-cart3"></i>
+                                            <div class="cart">
+                                                <span id="panier-count"></span>
+                                            </div> *@
+                                        Mon Panier
                                     </a>
                                 </li>
                             }
                             else
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Categories"
-                                        asp-action="Index">Categories</a>
+                                    <a class="nav-link text-dark @(ViewContext.RouteData.Values["controller"]?.ToString() == "Categories" ? "active-nav-link" : "")"
+                                        asp-area="" asp-controller="Categories" asp-action="Index">Categories</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Users</a>
