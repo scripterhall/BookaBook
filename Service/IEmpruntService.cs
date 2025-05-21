@@ -7,7 +7,7 @@ namespace BookaBook.Service
     {
         Task BorrowAsync(Guid livreId, DateTime dateRetourPrevue);
         Task ReturnAsync(Guid empruntId);
-        Task<IEnumerable<Emprunt>> GetAllEmpruntsForCurrentUserAsync();
+        Task<IEnumerable<Emprunt>> GetAllEmpruntsForCurrentUserAsync(string? etat = null);
         Task BorrowMultipleAsync();
         Task<IEnumerable<Emprunt>> GetAllEmpruntsAsync();
 

@@ -63,11 +63,20 @@ namespace BookaBook.ServiceImpl
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Emprunt>> GetAllEmpruntsForCurrentUserAsync()
+        public async Task<IEnumerable<Emprunt>> GetAllEmpruntsForCurrentUserAsync(string? etat = null)
         {
-            return await _context.Emprunts
+            var userId = this.GetUserId();
+
+            var query = _context.Emprunts
                 .Include(e => e.Livre)
-                .Where(e => e.UserId == this.GetUserId())
+                .Where(e => e.UserId == userId);
+
+            if (etat != null)
+            {
+                query = query.Where(e => e.Etat == etat);
+            }
+
+            return await query
                 .OrderBy(e => e.Etat)
                 .ToListAsync();
         }

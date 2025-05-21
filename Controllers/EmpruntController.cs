@@ -7,11 +7,12 @@ namespace BookaBook.Controllers
     {
         private readonly IEmpruntService _empruntService = empruntService;
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? etat)
         {
 
-            var emprunts = await _empruntService.GetAllEmpruntsForCurrentUserAsync();
-            return View("Index", emprunts);
+            var emprunts = await _empruntService.GetAllEmpruntsForCurrentUserAsync(etat);
+            ViewBag.CurrentEtat = etat;
+            return View(emprunts);
         }
 
         public async Task<IActionResult> Borrow(Guid livreId, DateTime dateRetourPrevue)
