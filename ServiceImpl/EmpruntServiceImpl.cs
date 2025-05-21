@@ -63,13 +63,12 @@ namespace BookaBook.ServiceImpl
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Emprunt>> GetActiveEmpruntsForUserAsync()
+        public async Task<IEnumerable<Emprunt>> GetAllEmpruntsForCurrentUserAsync()
         {
             return await _context.Emprunts
                 .Include(e => e.Livre)
-                .Where(e => e.UserId == this.GetUserId() && e.DateRetourEffective == null)
+                .Where(e => e.UserId == this.GetUserId())
                 .OrderBy(e => e.Etat)
-                .ThenBy(e => e.DateRetourPrevue)
                 .ToListAsync();
         }
 

@@ -21,13 +21,15 @@
                 <td>@emprunt.Livre?.Titre</td>
                 <td>@emprunt.DateAction.ToString("dd/MM/yyyy")</td>
                 <td>@emprunt.DateRetourPrevue.ToString("dd/MM/yyyy")</td>
-                <td>@emprunt.Etat</td>
+                <td
+                    class="text-@(emprunt.Etat == "Validé" ? "info" : (emprunt.Etat == "Terminé" ? "success" : "warning")) fw-bold ">
+                    @emprunt.Etat</td>
                 <td>
                     <form asp-action="Return" asp-controller="Emprunt" method="post">
                         <input type="hidden" name="empruntId" value="@emprunt.Id" />
                         @if (emprunt.Etat == "Validé")
                         {
-                            <button type="submit" class="btn btn-success">Rendre</button>
+                            <button type="submit" class="btn btn-info">Rendre</button>
                         }
                         else if (emprunt.Etat == "En attente")
                         {

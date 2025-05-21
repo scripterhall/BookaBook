@@ -10,7 +10,7 @@ namespace BookaBook.Controllers
         public async Task<IActionResult> Index()
         {
 
-            var emprunts = await _empruntService.GetActiveEmpruntsForUserAsync();
+            var emprunts = await _empruntService.GetAllEmpruntsForCurrentUserAsync();
             return View("Index", emprunts);
         }
 
