@@ -32,8 +32,16 @@ namespace BookaBook.Controllers
         [HttpPost]
         public async Task<IActionResult> Return(Guid empruntId)
         {
-            await _empruntService.ReturnAsync(empruntId);
-            return RedirectToAction("Index");
+            try
+            {
+                await _empruntService.ReturnAsync(empruntId);
+                return RedirectToAction("Index");
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]
@@ -60,8 +68,16 @@ namespace BookaBook.Controllers
         [HttpPost]
         public async Task<IActionResult> RemoveFromCart(Guid empruntId)
         {
-            await _empruntService.RemoveFromCartAsync(empruntId);
-            return RedirectToAction("Cart");
+            try
+            {
+                await _empruntService.RemoveFromCartAsync(empruntId);
+                return RedirectToAction("Cart");
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Cart");
+            }
         }
 
         [HttpPost]

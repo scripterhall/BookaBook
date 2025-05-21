@@ -41,6 +41,7 @@ namespace BookaBook.ServiceImpl
                 DateAction = DateTime.Now,
                 Etat = "Validé"
             };
+            livre.NombreExemplaires--;
 
             _context.Emprunts.Add(emprunt);
             await _context.SaveChangesAsync();
@@ -54,10 +55,11 @@ namespace BookaBook.ServiceImpl
                 throw new InvalidOperationException("Emprunt introuvable.");
 
             emprunt.DateRetourEffective = DateTime.Now;
-            emprunt.Etat = emprunt.DateRetourEffective > emprunt.DateRetourPrevue
-                           ? "En retard"
-                           : "Terminé";
-
+            emprunt.Etat = emprunt.DateRetourEffective > emprunt.DateRetourPrevue ? "En retard" : "Terminé";
+            var livre = await _context.Livres.FindAsync(emprunt.LivreId);
+            if (livre == null)
+                throw new InvalidOperationException("Livre introuvable.");
+            livre.NombreExemplaires++;
             await _context.SaveChangesAsync();
         }
 
@@ -76,6 +78,7 @@ namespace BookaBook.ServiceImpl
             var userId = this.GetUserId();
 
             var empruntsEnAttente = await _context.Emprunts
+            .Include(e => e.Livre)
                 .Where(e => e.UserId == userId && e.Etat == "En attente")
                 .ToListAsync();
 
@@ -84,6 +87,11 @@ namespace BookaBook.ServiceImpl
 
             foreach (var emprunt in empruntsEnAttente)
             {
+                if (emprunt.Livre == null)
+                    throw new InvalidOperationException("Livre introuvable pour cet emprunt, Refreshez.");
+                if (emprunt.Livre.NombreExemplairesDisponibles <= 0)
+                    throw new InvalidOperationException($"Aucun exemplaire disponible pour le livre {emprunt.Livre.Titre}.");
+                emprunt.Livre.NombreExemplaires--;
                 emprunt.Etat = "Validé";
                 emprunt.DateAction = DateTime.Now;
             }
