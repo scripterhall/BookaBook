@@ -36,11 +36,50 @@ namespace BookaBook.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> AllEmprunts()
+        [HttpPost]
+        public async Task<IActionResult> AddToCart(Guid livreId)
         {
-            var emprunts = await _empruntService.GetAllEmpruntsAsync();
-            return View(emprunts);
+            try
+            {
+                await _empruntService.AddToCartAsync(livreId);
+                return RedirectToAction("Index", "Livre");
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Details", "Livre", new { id = livreId });
+            }
         }
+
+        public async Task<IActionResult> Cart()
+        {
+            var cart = await _empruntService.GetCartAsync();
+            return View("Cart", cart);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveFromCart(Guid empruntId)
+        {
+            await _empruntService.RemoveFromCartAsync(empruntId);
+            return RedirectToAction("Cart");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> BorrowMultiple()
+        {
+            try
+            {
+                await _empruntService.BorrowMultipleAsync();
+                return RedirectToAction("Index");
+            }
+            catch (InvalidOperationException ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return RedirectToAction("Cart");
+            }
+        }
+
+
 
     }
 }

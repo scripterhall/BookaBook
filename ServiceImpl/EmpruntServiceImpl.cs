@@ -66,33 +66,28 @@ namespace BookaBook.ServiceImpl
             return await _context.Emprunts
                 .Include(e => e.Livre)
                 .Where(e => e.UserId == this.GetUserId() && e.DateRetourEffective == null)
+                .OrderBy(e => e.Etat)
+                .ThenBy(e => e.DateRetourPrevue)
                 .ToListAsync();
         }
 
-        public async Task BorrowMultipleAsync(IEnumerable<Guid> livreIds, DateTime dateRetourPrevue)
+        public async Task BorrowMultipleAsync()
         {
-            var livres = await _context.Livres
-                .Include(l => l.Emprunts)
-                .Where(l => livreIds.Contains(l.Id))
+            var userId = this.GetUserId();
+
+            var empruntsEnAttente = await _context.Emprunts
+                .Where(e => e.UserId == userId && e.Etat == "En attente")
                 .ToListAsync();
 
-            foreach (var livre in livres)
+            if (!empruntsEnAttente.Any())
+                throw new InvalidOperationException("Aucun emprunt en attente à valider.");
+
+            foreach (var emprunt in empruntsEnAttente)
             {
-                if (livre.NombreExemplairesDisponibles <= 0)
-                    throw new InvalidOperationException(
-                        $"Livre '{livre.Titre}' n'est pas disponible.");
+                emprunt.Etat = "Validé";
+                emprunt.DateAction = DateTime.Now;
             }
 
-            var emprunts = livres.Select(livre => new Emprunt
-            {
-                LivreId = livre.Id,
-                UserId = this.GetUserId(),
-                DateRetourPrevue = dateRetourPrevue,
-                DateAction = DateTime.Now,
-                Etat = "Validé"
-            });
-
-            _context.Emprunts.AddRange(emprunts);
             await _context.SaveChangesAsync();
         }
 
@@ -109,6 +104,61 @@ namespace BookaBook.ServiceImpl
             {
                 throw new InvalidOperationException("Erreur lors de la récupération des emprunts.", ex);
             }
+        }
+
+        public async Task AddToCartAsync(Guid livreId)
+        {
+            var livre = await _context.Livres
+                .Include(l => l.Emprunts)
+                .FirstOrDefaultAsync(l => l.Id == livreId);
+
+            if (livre == null)
+                throw new InvalidOperationException("Livre introuvable.");
+
+            if (livre.NombreExemplairesDisponibles <= 0)
+                throw new InvalidOperationException("Aucun exemplaire disponible.");
+
+            var userId = this.GetUserId();
+
+            bool alreadyInCart = await _context.Emprunts
+                .AnyAsync(e => e.LivreId == livreId && e.UserId == userId && e.Etat == "En attente");
+
+            if (alreadyInCart)
+                throw new InvalidOperationException("Ce livre est déjà dans le panier.");
+
+
+            var emprunt = new Emprunt
+            {
+                LivreId = livreId,
+                UserId = userId,
+                DateAction = DateTime.Now,
+                Etat = "En attente"
+            };
+
+            _context.Emprunts.Add(emprunt);
+            await _context.SaveChangesAsync();
+        }
+
+        // etat en attente cad les livre deja emprunté
+        public async Task<IEnumerable<Emprunt>> GetCartAsync()
+        {
+            return await _context.Emprunts
+                .Include(e => e.Livre)
+                .Where(e => e.UserId == this.GetUserId() && e.Etat == "En attente")
+                .ToListAsync();
+        }
+
+
+        public async Task RemoveFromCartAsync(Guid empruntId)
+        {
+            var emprunt = await _context.Emprunts
+            .FirstOrDefaultAsync(e => e.Id == empruntId && e.UserId == this.GetUserId() && e.Etat == "En attente");
+
+            if (emprunt == null)
+                throw new InvalidOperationException("Emprunt introuvable dans le panier.");
+
+            _context.Emprunts.Remove(emprunt);
+            await _context.SaveChangesAsync();
         }
 
         private string GetUserId()

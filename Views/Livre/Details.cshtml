@@ -54,10 +54,18 @@
     <a asp-action="Index" class="btn btn-secondary">Back</a>
 </div>
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
 @* Modal *@
 <div class="modal fade" id="empruntModal" tabindex="-1" aria-labelledby="empruntModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
+
             <form asp-controller="Emprunt" asp-action="Borrow" method="post" class="needs-validation" novalidate>
                 <div class="modal-header">
                     <h5 class="modal-title" id="empruntModalLabel">Emprunter “@Model.Titre”</h5>
@@ -79,6 +87,10 @@
                         Annuler
                     </button>
                     <button type="submit" class="btn btn-primary">Emprunter Directement</button>
+                    - ou --
+                    <button type="submit" class="btn btn-primary" formaction="@Url.Action("AddToCart", "Emprunt")">
+                        Ajouter au Panier
+                    </button>
                 </div>
             </form>
         </div>

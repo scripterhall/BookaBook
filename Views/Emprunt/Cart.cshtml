@@ -1,6 +1,6 @@
 @model IEnumerable<BookaBook.Models.Emprunt>
 @{
-    ViewData["Title"] = "Mes Emprunts";
+    ViewData["Title"] = "Mon Panier";
 }
 <h1>@ViewData["Title"]</h1>
 
@@ -23,23 +23,24 @@
                 <td>@emprunt.DateRetourPrevue.ToString("dd/MM/yyyy")</td>
                 <td>@emprunt.Etat</td>
                 <td>
-                    <form asp-action="Return" asp-controller="Emprunt" method="post">
+                    <form asp-action="RemoveFromCart" asp-controller="Emprunt" method="post">
                         <input type="hidden" name="empruntId" value="@emprunt.Id" />
-                        @if (emprunt.Etat == "Validé")
-                        {
-                            <button type="submit" class="btn btn-success">Rendre</button>
-                        }
-                        else if (emprunt.Etat == "En attente")
-                        {
-                            <button type="submit" class="btn btn-warning">Annuler</button>
-                        }
+                        <button type="submit" class="btn btn-warning">Annuler</button>
                     </form>
                 </td>
             </tr>
         }
     </tbody>
 </table>
-<div class="alert alert-info">Aucun emprunt actif.</div>
+@if (Model.Count() == 0)
+{
+    <div class="alert alert-info">Votre Panier est vide..</div>
+}
 
 
-<a asp-controller="Livre" asp-action="Index" class="btn btn-secondary">Revenir au catalogue</a>
+<div class="d-flex justify-content-between">
+    <a asp-controller="Livre" asp-action="Index" class="btn btn-secondary">Revenir au catalogue</a>
+    <form asp-controller="Emprunt" asp-action="BorrowMultiple" method="post" style="display:inline;">
+        <button type="submit" class="btn btn-primary">Emprunter Tous</button>
+    </form>
+</div>

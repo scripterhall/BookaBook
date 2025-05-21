@@ -8,7 +8,12 @@ namespace BookaBook.Service
         Task BorrowAsync(Guid livreId, DateTime dateRetourPrevue);
         Task ReturnAsync(Guid empruntId);
         Task<IEnumerable<Emprunt>> GetActiveEmpruntsForUserAsync();
-        Task BorrowMultipleAsync(IEnumerable<Guid> livreIds, DateTime dateRetourPrevue);
+        Task BorrowMultipleAsync();
         Task<IEnumerable<Emprunt>> GetAllEmpruntsAsync();
+
+        Task AddToCartAsync(Guid livreId);
+        Task<IEnumerable<Emprunt>> GetCartAsync();
+
+        Task RemoveFromCartAsync(Guid empruntId);
     }
 }
