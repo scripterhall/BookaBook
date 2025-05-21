@@ -204,8 +204,7 @@ namespace BookaBook.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Auteur")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("CategorieId")
                         .HasColumnType("uniqueidentifier");

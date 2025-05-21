@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookaBook.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250520154419_AddEmpruntFeature")]
-    partial class AddEmpruntFeature
+    [Migration("20250521080621_pullBo7mid")]
+    partial class pullBo7mid
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -207,8 +207,7 @@ namespace BookaBook.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Auteur")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("CategorieId")
                         .HasColumnType("uniqueidentifier");
